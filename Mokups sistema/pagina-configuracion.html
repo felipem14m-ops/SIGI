@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Sistema de Gestión de Inventario</title>
+    <link rel="stylesheet" href="../CSS/global.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <style>
+        /* Estilos específicos de configuración */
+        .grid-configuracion { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .tarjeta-seccion { background: var(--color-blanco); border-radius: var(--radio-borde); box-shadow: var(--sombra-suave); border: 1px solid var(--color-borde); overflow: hidden; }
+        .encabezado-tarjeta { padding: 20px 25px; border-bottom: 1px solid var(--color-borde); display: flex; align-items: center; gap: 10px; }
+        .encabezado-tarjeta h2 { font-size: 1.1rem; color: var(--color-texto); }
+        .contenido-tarjeta { padding: 20px 25px; }
+        .elemento-config { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--color-borde); }
+        .elemento-config:last-child { border-bottom: none; }
+        .info-elemento h4 { font-size: 0.95rem; color: var(--color-texto); margin-bottom: 5px; }
+        .info-elemento p { font-size: 0.8rem; color: var(--color-texto-suave); }
+        .etiqueta-activo { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #ecfdf5; color: var(--color-exito); text-transform: uppercase; }
+        .botones-elemento { display: flex; gap: 8px; }
+        .btn-mini { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+        .btn-cambiar-default { background: var(--color-primario-suave); color: var(--color-primario); }
+        .btn-cambiar-default:hover { background: var(--color-primario); color: white; }
+        .boton-agregar { width: 100%; padding: 12px; background: var(--color-primario); color: var(--color-blanco); border: none; border-radius: var(--radio-borde); cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; margin-top: 15px; }
+        .boton-agregar:hover { background: var(--color-primario-hover); }
+        .formulario-config { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .campo-config { display: flex; flex-direction: column; gap: 8px; }
+        .campo-config label { font-weight: 500; font-size: 0.9rem; color: var(--color-texto); }
+        .campo-config input, .campo-config select, .campo-config textarea { padding: 12px; border: 1px solid var(--color-borde); border-radius: var(--radio-borde); font-size: 0.95rem; transition: all 0.2s; }
+        .campo-config input:focus, .campo-config select:focus, .campo-config textarea:focus { outline: none; border-color: var(--color-primario); box-shadow: 0 0 0 3px var(--color-primario-suave); }
+        .switch { position: relative; width: 50px; height: 28px; background-color: #ccc; border-radius: 14px; cursor: pointer; transition: background-color 0.3s; }
+        .switch.activo { background-color: var(--color-exito); }
+        .switch::after { content: ''; position: absolute; width: 24px; height: 24px; border-radius: 50%; background-color: white; top: 2px; left: 2px; transition: left 0.3s; }
+        .switch.activo::after { left: 24px; }
+        .botones-guardar { display: flex; gap: 10px; justify-content: flex-end; padding-top: 15px; border-top: 1px solid var(--color-borde); margin-top: 15px; }
+        .btn-guardar { padding: 10px 20px; background: var(--color-exito); color: white; border: none; border-radius: var(--radio-borde); cursor: pointer; font-weight: 500; }
+        .btn-cancelar { padding: 10px 20px; background: #f1f5f9; color: var(--color-texto); border: none; border-radius: var(--radio-borde); cursor: pointer; font-weight: 500; }
+        @media (max-width: 1024px) { .grid-configuracion { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Menú Lateral -->
+        <aside class="menu-lateral">
+            <div class="menu-titulo">La Esquina</div>
+            <ul class="lista-enlaces">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="pagina-productos.html">Productos</a></li>
+                <li><a href="punto-venta.html">Ventas</a></li>
+                <li><a href="pagina-inventario.html">Inventario</a></li>
+                <li><a href="pagina-usuarios.html">Usuarios</a></li>
+                <li><a href="pagina-proveedores.html">Proveedores</a></li>
+                <li><a href="pagina-alertas.html">Alertas</a></li>
+                <li><a href="pagina-configuracion.html" class="activa">Configuración</a></li>
+                <li><a href="pagina-reportes.html">Reportes</a></li>
+            </ul>
+            <div class="pie-menu">
+                <button class="boton-salida">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Contenido -->
+        <main class="aplicacion">
+            <header class="barra-superior">
+                <div>
+                    <h1>Configuración del Sistema</h1>
+                    <p>Personaliza opciones y parámetros</p>
+                </div>
+                <div class="seccion-usuario">
+                    <div class="fotos-avatar">A</div>
+                </div>
+            </header>
+
+            <div class="pagina-contenido">
+                <div class="grid-configuracion">
+                    <!-- MÉTODOS DE PAGO -->
+                    <div class="tarjeta-seccion">
+                        <div class="encabezado-tarjeta">
+                            <span style="font-size: 24px;">💳</span>
+                            <h2>Métodos de Pago</h2>
+                        </div>
+                        <div class="contenido-tarjeta">
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Efectivo</h4>
+                                    <p>Método por defecto</p>
+                                </div>
+                                <div>
+                                    <span class="etiqueta-activo">Activo</span>
+                                </div>
+                            </div>
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Tarjeta Débito</h4>
+                                    <p>Débito/Crédito</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Editar</button>
+                                </div>
+                            </div>
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Nequi</h4>
+                                    <p>Billetera Digital</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Editar</button>
+                                </div>
+                            </div>
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Daviplata</h4>
+                                    <p>Billetera Digital</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Editar</button>
+                                </div>
+                            </div>
+                            <button class="boton-agregar">➕ Agregar Método de Pago</button>
+                        </div>
+                    </div>
+
+                    <!-- PARÁMETROS DE STOCK -->
+                    <div class="tarjeta-seccion">
+                        <div class="encabezado-tarjeta">
+                            <span style="font-size: 24px;">📊</span>
+                            <h2>Parámetros de Stock</h2>
+                        </div>
+                        <div class="contenido-tarjeta">
+                            <div class="formulario-config">
+                                <div class="campo-config">
+                                    <label>Stock Mínimo Predeterminado</label>
+                                    <input type="number" value="5" placeholder="Cantidad mínima">
+                                    <p style="font-size: 0.8rem; color: var(--color-texto-suave); margin-top: 5px;">
+                                        Cantidad mínima para generar alertas
+                                    </p>
+                                </div>
+                                <div class="campo-config">
+                                    <label>Días de Alerta Antes de Vencer</label>
+                                    <input type="number" value="30" placeholder="Días">
+                                    <p style="font-size: 0.8rem; color: var(--color-texto-suave); margin-top: 5px;">
+                                        Genera alertas X días antes del vencimiento
+                                    </p>
+                                </div>
+                                <div class="botones-guardar">
+                                    <button class="btn-cancelar">Cancelar</button>
+                                    <button class="btn-guardar">✓ Guardar Cambios</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORÍAS DE PRODUCTOS -->
+                    <div class="tarjeta-seccion">
+                        <div class="encabezado-tarjeta">
+                            <span style="font-size: 24px;">📁</span>
+                            <h2>Categorías de Productos</h2>
+                        </div>
+                        <div class="contenido-tarjeta">
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Alimentos</h4>
+                                    <p>245 productos</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Editar</button>
+                                </div>
+                            </div>
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Aseo Personal</h4>
+                                    <p>89 productos</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Editar</button>
+                                </div>
+                            </div>
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Útiles Escolares</h4>
+                                    <p>156 productos</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Editar</button>
+                                </div>
+                            </div>
+                            <button class="boton-agregar">➕ Nueva Categoría</button>
+                        </div>
+                    </div>
+
+                    <!-- CONFIGURACIÓN DE ALERTAS -->
+                    <div class="tarjeta-seccion">
+                        <div class="encabezado-tarjeta">
+                            <span style="font-size: 24px;">🔔</span>
+                            <h2>Alertas y Notificaciones</h2>
+                        </div>
+                        <div class="contenido-tarjeta">
+                            <div class="elemento-config" style="flex-direction: column; align-items: flex-start; gap: 15px;">
+                                <div style="width: 100%;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label style="font-weight: 500; color: var(--color-texto);">Alertas de Stock Bajo</label>
+                                        <div class="toggle-switch">
+                                            <div class="switch activo"></div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--color-texto-suave); margin-top: 5px;">
+                                        Notificar cuando stock es bajo
+                                    </p>
+                                </div>
+                                <div style="width: 100%; border-top: 1px solid var(--color-borde); padding-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label style="font-weight: 500; color: var(--color-texto);">Alertas de Vencimiento</label>
+                                        <div class="toggle-switch">
+                                            <div class="switch activo"></div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--color-texto-suave); margin-top: 5px;">
+                                        Notificar productos próximos a vencer
+                                    </p>
+                                </div>
+                                <div style="width: 100%; border-top: 1px solid var(--color-borde); padding-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label style="font-weight: 500; color: var(--color-texto);">Alertas de Mantenimiento</label>
+                                        <div class="toggle-switch">
+                                            <div class="switch activo"></div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--color-texto-suave); margin-top: 5px;">
+                                        Recordar mantenimiento de equipos
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INFORMACIÓN DEL NEGOCIO -->
+                    <div class="tarjeta-seccion">
+                        <div class="encabezado-tarjeta">
+                            <span style="font-size: 24px;">🏪</span>
+                            <h2>Información del Negocio</h2>
+                        </div>
+                        <div class="contenido-tarjeta">
+                            <div class="formulario-config">
+                                <div class="campo-config">
+                                    <label>Nombre del Negocio</label>
+                                    <input type="text" value="La Esquina" placeholder="Nombre">
+                                </div>
+                                <div class="campo-config">
+                                    <label>Teléfono</label>
+                                    <input type="text" value="+57 315 123 4567" placeholder="Teléfono">
+                                </div>
+                                <div class="campo-config">
+                                    <label>Email</label>
+                                    <input type="email" value="info@laesquina.com" placeholder="Email">
+                                </div>
+                                <div class="campo-config">
+                                    <label>Dirección</label>
+                                    <input type="text" value="Cra 5 # 12-45, Neiva" placeholder="Dirección">
+                                </div>
+                                <div class="botones-guardar">
+                                    <button class="btn-cancelar">Cancelar</button>
+                                    <button class="btn-guardar">✓ Guardar Cambios</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESPALDO Y BASE DE DATOS -->
+                    <div class="tarjeta-seccion">
+                        <div class="encabezado-tarjeta">
+                            <span style="font-size: 24px;">💾</span>
+                            <h2>Respaldo de Datos</h2>
+                        </div>
+                        <div class="contenido-tarjeta">
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Último Respaldo</h4>
+                                    <p>Hoy a las 12:30 PM</p>
+                                </div>
+                            </div>
+                            <div class="elemento-config">
+                                <div class="info-elemento">
+                                    <h4>Respaldos Automáticos</h4>
+                                    <p>Diarios a las 2:00 AM</p>
+                                </div>
+                                <div class="botones-elemento">
+                                    <button class="btn-mini btn-editar">Cambiar</button>
+                                </div>
+                            </div>
+                            <button class="boton-agregar" style="background: #0284c7;">💾 Hacer Respaldo Ahora</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

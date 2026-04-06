@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Sistema de Gestión de Inventario</title>
+    <link rel="stylesheet" href="../CSS/global.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+
+</head>
+<body>
+    <div class="layout-contenedor">
+        <!-- Sidebar Navegación -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>La Esquina</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="productos.html" class="activo">Productos</a></li>
+                <li><a href="punto-venta.html">Ventas</a></li>
+                <li><a href="inventario.html">Inventario</a></li>
+                <li><a href="usuarios.html">Usuarios</a></li>
+                <li><a href="reportes.html">Reportes</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="btn-cerrar-sesion">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenedor-principal">
+            <header class="header-superior">
+                <div class="header-titulo">
+                    <h1>Inventario de Productos</h1>
+                    <p>Gestión completa del catálogo</p>
+                </div>
+                <div class="usuario-seccion">
+                    <div class="usuario-avatar">A</div>
+                </div>
+            </header>
+
+            <div class="area-contenido">
+                <!-- Mensaje de Éxito -->
+                <div class="alerta-exito">
+                    <span>✅</span>
+                    Producto "Leche Entera 1L" registrado exitosamente
+                </div>
+
+                <!-- Tabla de Productos -->
+                <div class="tarjeta-contenedor">
+                    <div class="tarjeta-encabezado">
+                        <h2>Listado de Productos</h2>
+                        <div class="botones-accion">
+                            <button class="btn btn-secundario">📥 Exportar</button>
+                            <button class="btn btn-primario">➕ Nuevo Producto</button>
+                        </div>
+                    </div>
+
+                    <div class="barra-filtros">
+                        <div class="grupo-filtro">
+                            <label>Buscar</label>
+                            <input type="text" placeholder="Nombre o código...">
+                        </div>
+                        <div class="grupo-filtro">
+                            <label>Categoría</label>
+                            <select>
+                                <option>Todas</option>
+                                <option>Alimentos</option>
+                                <option>Aseo Personal</option>
+                                <option>Útiles Escolares</option>
+                            </select>
+                        </div>
+                        <div class="grupo-filtro">
+                            <label>Estado</label>
+                            <select>
+                                <option>Todos</option>
+                                <option>Activos</option>
+                                <option>Inactivos</option>
+                                <option>Agotados</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="contenedor-tabla">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Proveedor</th>
+                                    <th>Precio Venta</th>
+                                    <th>Stock</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PROD-001</td>
+                                    <td>Arroz Premium 1kg</td>
+                                    <td>Alimentos</td>
+                                    <td>Distribuidora XYZ</td>
+                                    <td>$4.500</td>
+                                    <td>150</td>
+                                    <td><span class="etiqueta-estado estado-activo">Activo</span></td>
+                                    <td>
+                                        <div class="acciones-btn">
+                                            <button class="btn-miniatura btn-ver">Ver</button>
+                                            <button class="btn-miniatura btn-editar">Editar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PROD-002</td>
+                                    <td>Leche Entera 1L</td>
+                                    <td>Alimentos</td>
+                                    <td>Lácteos del Valle</td>
+                                    <td>$5.200</td>
+                                    <td>85</td>
+                                    <td><span class="etiqueta-estado estado-activo">Activo</span></td>
+                                    <td>
+                                        <div class="acciones-btn">
+                                            <button class="btn-miniatura btn-ver">Ver</button>
+                                            <button class="btn-miniatura btn-editar">Editar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PROD-003</td>
+                                    <td>Jabón Líquido 500ml</td>
+                                    <td>Aseo Personal</td>
+                                    <td>Limpieza Total</td>
+                                    <td>$8.900</td>
+                                    <td>0</td>
+                                    <td><span class="etiqueta-estado estado-agotado">Agotado</span></td>
+                                    <td>
+                                        <div class="acciones-btn">
+                                            <button class="btn-miniatura btn-ver">Ver</button>
+                                            <button class="btn-miniatura btn-editar">Editar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PROD-004</td>
+                                    <td>Cuaderno 100 Hojas</td>
+                                    <td>Útiles Escolares</td>
+                                    <td>Papelería Central</td>
+                                    <td>$12.000</td>
+                                    <td>45</td>
+                                    <td><span class="etiqueta-estado estado-activo">Activo</span></td>
+                                    <td>
+                                        <div class="acciones-btn">
+                                            <button class="btn-miniatura btn-ver">Ver</button>
+                                            <button class="btn-miniatura btn-editar">Editar</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

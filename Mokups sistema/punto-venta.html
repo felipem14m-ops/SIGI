@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - Sistema de Gestión de Inventario</title>
+    <link rel="stylesheet" href="../CSS/global.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+
+    <style>
+        :root {
+            --color-primario: #0ea5e9;
+            --color-primario-hover: #0284c7;
+            --color-primario-suave: #e0f2fe;
+            --color-fondo: #f8fafc;
+            --color-texto: #334155;
+            --color-texto-suave: #64748b;
+            --color-borde: #e2e8f0;
+            --color-blanco: #ffffff;
+            --color-exito: #10b981;
+            --radio-borde: 8px;
+            --sombra-suave: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+
+        .layout-sistema {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        .barra-lateral {
+            background: #1e293b;
+            color: var(--color-blanco);
+            padding: 20px;
+        }
+
+        .encabezado-lateral {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .encabezado-lateral h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .menu-navegacion {
+            list-style: none;
+        }
+
+        .menu-navegacion li {
+            margin-bottom: 5px;
+        }
+
+        .menu-navegacion a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: var(--radio-borde);
+            transition: all 0.2s;
+        }
+
+        .menu-navegacion a.activo {
+            background: rgba(14, 165, 233, 0.15);
+            color: var(--color-primario);
+        }
+
+        .pie-lateral {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-salida {
+            width: 100%;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: none;
+            border-radius: var(--radio-borde);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .contenedor-aplicacion {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cabecera-pagina {
+            background: var(--color-blanco);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .titulo-pagina h1 {
+            font-size: 1.4rem;
+            color: var(--color-texto);
+            margin-bottom: 5px;
+        }
+
+        .titulo-pagina p {
+            font-size: 0.85rem;
+            color: var(--color-texto-suave);
+        }
+
+        .datos-usuario {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-usuario {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--color-primario-suave);
+            color: var(--color-primario);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .seccion-contenido {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .diseño-pos {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 20px;
+        }
+
+        .seccion-productos {
+            background: var(--color-blanco);
+            border-radius: var(--radio-borde);
+            padding: 20px;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .busqueda-productos {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .busqueda-productos input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            font-size: 0.95rem;
+        }
+
+        .busqueda-productos select {
+            padding: 12px;
+            border: 1px solid var(--color-borde);
+            border-radius: 8px;
+        }
+
+        .cuadricula-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .tarjeta-producto {
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tarjeta-producto:hover {
+            border-color: var(--color-primario);
+            background: var(--color-primario-suave);
+        }
+
+        .icono-producto {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .nombre-producto {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--color-texto);
+            font-weight: 500;
+        }
+
+        .precio-producto {
+            font-weight: 700;
+            color: var(--color-primario);
+        }
+
+        .stock-producto {
+            font-size: 0.8rem;
+            color: var(--color-texto-suave);
+        }
+
+        .seccion-carrito {
+            background: var(--color-blanco);
+            border-radius: var(--radio-borde);
+            padding: 20px;
+            box-shadow: var(--sombra-suave);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .items-carrito {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .articulo-carrito {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .informacion-articulo h4 {
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+
+        .informacion-articulo p {
+            font-size: 0.8rem;
+            color: var(--color-texto-suave);
+        }
+
+        .controles-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controles-cantidad button {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--color-borde);
+            background: var(--color-blanco);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .resumen-total {
+            padding-top: 20px;
+            border-top: 2px solid var(--color-borde);
+            margin-top: 20px;
+        }
+
+        .fila-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .fila-total.monto-final {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-primario);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--color-borde);
+        }
+
+        .grupo-formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .grupo-formulario label {
+            font-size: 0.9rem;
+            color: var(--color-texto);
+            font-weight: 500;
+        }
+
+        .grupo-formulario select {
+            padding: 12px;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            font-size: 0.95rem;
+        }
+
+        .botones-finales {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: var(--radio-borde);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-secundario {
+            background: #f1f5f9;
+            color: var(--color-texto);
+        }
+
+        .btn-primario {
+            background: var(--color-primario);
+            color: var(--color-blanco);
+        }
+
+        .btn-primario:hover {
+            background: var(--color-primario-hover);
+        }
+
+        @media (max-width: 1024px) {
+            .layout-sistema {
+                grid-template-columns: 1fr;
+            }
+            .barra-lateral {
+                display: none;
+            }
+            .diseño-pos {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-sistema">
+        <!-- Barra Lateral -->
+        <aside class="barra-lateral">
+            <div class="encabezado-lateral">
+                <h3>La Esquina</h3>
+            </div>
+            <ul class="menu-navegacion">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="pagina-productos.html">Productos</a></li>
+                <li><a href="punto-venta.html" class="activo">Ventas</a></li>
+                <li><a href="pagina-inventario.html">Inventario</a></li>
+                <li><a href="pagina-usuarios.html">Usuarios</a></li>
+                <li><a href="pagina-reportes.html">Reportes</a></li>
+            </ul>
+            <div class="pie-lateral">
+                <button class="btn-salida">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenedor-aplicacion">
+            <header class="cabecera-pagina">
+                <div class="titulo-pagina">
+                    <h1>Nueva Venta</h1>
+                    <p>Registro de transacción #V-2025004</p>
+                </div>
+                <div class="datos-usuario">
+                    <div class="avatar-usuario">E</div>
+                </div>
+            </header>
+
+            <div class="seccion-contenido">
+                <div class="diseño-pos">
+                    <!-- Panel de Productos -->
+                    <div class="seccion-productos">
+                        <div class="busqueda-productos">
+                            <input type="text" placeholder="🔍 Buscar por código de barras...">
+                            <select>
+                                <option>Todas las categorías</option>
+                                <option>Alimentos</option>
+                                <option>Aseo Personal</option>
+                                <option>Útiles Escolares</option>
+                            </select>
+                        </div>
+
+                        <div class="cuadricula-productos">
+                            <div class="tarjeta-producto">
+                                <div class="icono-producto">🍚</div>
+                                <p class="nombre-producto">Arroz Premium 1kg</p>
+                                <p class="precio-producto">$4.500</p>
+                                <p class="stock-producto">Stock: 150</p>
+                            </div>
+                            <div class="tarjeta-producto">
+                                <div class="icono-producto">🥛</div>
+                                <p class="nombre-producto">Leche Entera 1L</p>
+                                <p class="precio-producto">$5.200</p>
+                                <p class="stock-producto">Stock: 85</p>
+                            </div>
+                            <div class="tarjeta-producto">
+                                <div class="icono-producto">🍞</div>
+                                <p class="nombre-producto">Pan Integral</p>
+                                <p class="precio-producto">$3.800</p>
+                                <p class="stock-producto">Stock: 42</p>
+                            </div>
+                            <div class="tarjeta-producto">
+                                <div class="icono-producto">🧼</div>
+                                <p class="nombre-producto">Jabón Líquido</p>
+                                <p class="precio-producto">$8.900</p>
+                                <p class="stock-producto">Stock: 0</p>
+                            </div>
+                            <div class="tarjeta-producto">
+                                <div class="icono-producto">📓</div>
+                                <p class="nombre-producto">Cuaderno 100H</p>
+                                <p class="precio-producto">$12.000</p>
+                                <p class="stock-producto">Stock: 45</p>
+                            </div>
+                            <div class="tarjeta-producto">
+                                <div class="icono-producto">✏️</div>
+                                <p class="nombre-producto">Lápiz x12</p>
+                                <p class="precio-producto">$6.500</p>
+                                <p class="stock-producto">Stock: 78</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carrito de Compra -->
+                    <div class="seccion-carrito">
+                        <h3>🛒 Carrito</h3>
+                        
+                        <div class="items-carrito">
+                            <div class="articulo-carrito">
+                                <div class="informacion-articulo">
+                                    <h4>Arroz Premium 1kg</h4>
+                                    <p>$4.500 x 2</p>
+                                </div>
+                                <div class="controles-cantidad">
+                                    <button>-</button>
+                                    <span>2</span>
+                                    <button>+</button>
+                                </div>
+                                <div style="font-weight: 600;">$9.000</div>
+                            </div>
+                            <div class="articulo-carrito">
+                                <div class="informacion-articulo">
+                                    <h4>Leche Entera 1L</h4>
+                                    <p>$5.200 x 3</p>
+                                </div>
+                                <div class="controles-cantidad">
+                                    <button>-</button>
+                                    <span>3</span>
+                                    <button>+</button>
+                                </div>
+                                <div style="font-weight: 600;">$15.600</div>
+                            </div>
+                            <div class="articulo-carrito">
+                                <div class="informacion-articulo">
+                                    <h4>Pan Integral</h4>
+                                    <p>$3.800 x 1</p>
+                                </div>
+                                <div class="controles-cantidad">
+                                    <button>-</button>
+                                    <span>1</span>
+                                    <button>+</button>
+                                </div>
+                                <div style="font-weight: 600;">$3.800</div>
+                            </div>
+                        </div>
+
+                        <div class="resumen-total">
+                            <div class="fila-total">
+                                <span>Subtotal</span>
+                                <span>$28.400</span>
+                            </div>
+                            <div class="fila-total">
+                                <span>Descuento</span>
+                                <span style="color: var(--color-exito);">-$0</span>
+                            </div>
+                            <div class="fila-total monto-final">
+                                <span>Total</span>
+                                <span>$28.400</span>
+                            </div>
+
+                            <div class="grupo-formulario">
+                                <label>Método de Pago</label>
+                                <select>
+                                    <option>Efectivo</option>
+                                    <option>Tarjeta Débito</option>
+                                    <option>Tarjeta Crédito</option>
+                                    <option>Nequi</option>
+                                    <option>Daviplata</option>
+                                </select>
+                            </div>
+
+                            <div class="botones-finales">
+                                <button class="btn btn-secundario">🚫 Anular</button>
+                                <button class="btn btn-primario">✅ Confirmar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
