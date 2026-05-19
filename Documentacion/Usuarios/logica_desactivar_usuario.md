@@ -1,0 +1,17 @@
+# Desactivar Usuario
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Adminusuarios.php.
+
+Para realizar esta acción, el usuario administrador interactúa con el botón de desactivar que se encuentra en cada fila de la tabla de usuarios, específicamente en los usuarios que tienen estado activo. El javascript de la página se encarga de mostrar un diálogo de confirmación con SweetAlert2 preguntando al administrador si está seguro de desactivar el usuario, mostrando el nombre del usuario y explicando que no podrá iniciar sesión pero que puede reactivarse cuando sea necesario. El sistema también valida que no se pueda desactivar el propio usuario administrador que está realizando la acción para evitar quedar bloqueado del sistema.
+
+Al momento de confirmar la acción, el sistema redirige directamente al archivo AdmiUsuarioController.php con los parámetros accion=desactivar e id con el número del usuario. Dentro de este controlador, el sistema pasa por la acción o función llamada desactivar en función principal.
+
+Cabe recordar que este controlador incluye todos los archivos de configuración como database.php para tener permisos en la base de datos, y se apoya en el modelo Usuario.php necesario para interactuar con la tabla usuarios. Una vez que el controlador recibe la petición, valida que el ID del usuario sea un número entero válido mayor a cero. También verifica que el ID del usuario a desactivar no sea el mismo que el ID del usuario en sesión para evitar que un administrador se desactive a sí mismo. Si pasa estas validaciones, el controlador llama al método cambiarEstado del modelo pasándole el ID del usuario y el nuevo estado que será 0 para inactivo.
+
+El modelo Usuario.php recibe el ID y el estado, y prepara una consulta SQL de tipo UPDATE muy simple que solo modifica el campo activo del usuario usando consultas preparadas con PDO. La consulta ejecuta UPDATE usuarios SET activo igual a 0 WHERE id_usuario igual al ID recibido. Esta operación es muy rápida y segura porque no elimina ningún dato, solo cambia el estado.
+
+Los usuarios inactivos no pueden iniciar sesión en el sistema. Si un usuario inactivo intenta hacer login, el sistema valida el campo activo antes de verificar la contraseña y muestra un mensaje indicando que la cuenta está desactivada y que debe contactar al administrador. Esto es útil cuando un empleado deja de trabajar en la empresa pero se quiere mantener el historial de sus ventas y movimientos de inventario. También es útil para suspender temporalmente el acceso de un usuario sin eliminar su cuenta.
+
+Las ventas y movimientos de inventario realizados por un usuario inactivo se mantienen en el sistema con su nombre asociado. Esto es importante para auditoría y trazabilidad. Si se eliminara el usuario, se perderían estas relaciones o quedarían huérfanas. Al desactivar en lugar de eliminar, se mantiene toda la integridad referencial y el historial completo.
+
+Al finalizar el proceso con éxito o si ocurre algún error, el mismo controlador se encarga de hacer el redireccionamiento para devolver al usuario a la vista auth/Adminusuarios.php, mostrando un mensaje flotante con SweetAlert2 indicando si el usuario fue desactivado correctamente o si hubo algún error en el proceso. Si el usuario desea reactivar al usuario, el proceso es exactamente el mismo pero cambiando el estado de 0 a 1, y el usuario podrá volver a iniciar sesión inmediatamente.

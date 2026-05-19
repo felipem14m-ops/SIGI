@@ -1,181 +1,140 @@
 <?php
+/**
+ * ============================================================================
+ * CONTROLADOR: AuthController
+ * Sistema: SIGI — Gestión de Inventario
+ * ============================================================================
+ * Responsabilidad: Autenticación de usuarios (login / logout).
+ * ============================================================================
+ */
 
-/* ======================================================
-INICIO DE SESIÓN PHP
-   ====================================================== */
 session_start();
 
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/Usuario.php';
 
-/* ======================================================
-CARGA DE RUTAS Y ARCHIVOS NECESARIOS
-   ====================================================== */
-$rootPath = dirname(__DIR__);
-require_once $rootPath . '/config/database.php';
-require_once $rootPath . '/models/Usuario.php';
-
-
-/* ======================================================
-CONEXIÓN A BASE DE DATOS Y MODELO USUARIO
-   ====================================================== */
-$database = new Database();
-$db = $database->conectar();
-$usuario = new Usuario($db);
-
-
-/* ======================================================
-CAPTURA DE ACCIÓN DESDE FORMULARIO (POST / GET)
-   ====================================================== */
-$accion = $_POST['accion'] ?? $_GET['accion'] ?? '';
-
-
-/* ======================================================
-CONTROLADOR PRINCIPAL DE ACCIONES
-   ====================================================== */
-switch ($accion) {
-
-    case 'login':
-        login($usuario);
-        break;
-
-    case 'registro':
-        registro($usuario);
-        break;
-
-    case 'logout':
-        logout();
-        break;
-
-    default:
-        redirigirConError('../views/usuarios/login.php', 'Acción no válida.');
-        break;
-}
-
-/* ======================================================
-FUNCIÓN LOGIN (INICIO DE SESIÓN)
-   ====================================================== */
-function login($usuario)
+class AuthController
 {
-    /* Captura de datos */
-    $email = trim($_POST['email'] ?? '');
-    $contrasena = trim($_POST['contrasena'] ?? '');
+    /**
+     * Procesa el inicio de sesión.
+     * Solo acepta método POST; cualquier otro acceso redirige al login.
+     */
+    public function login(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ../views/Usuario/login.php');
+            exit;
+        }
 
-    /* Validaciones básicas */
-    if (empty($email) || empty($contrasena)) {
-        redirigirConError('../views/usuarios/login.php', 'Completa todos los campos.');
+        $email     = trim($_POST['email']     ?? '');
+        $contrasena = trim($_POST['contrasena'] ?? '');
+
+        // Validación: campos vacíos
+        if (empty($email) || empty($contrasena)) {
+            $_SESSION['alert'] = [
+                'icon'  => 'warning',
+                'title' => 'Campos incompletos',
+                'text'  => 'Debe ingresar correo y contraseña.',
+            ];
+            header('Location: ../views/Usuario/login.php');
+            exit;
+        }
+
+        // Validación: formato de correo
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['alert'] = [
+                'icon'  => 'error',
+                'title' => 'Correo inválido',
+                'text'  => 'Ingrese un correo electrónico válido.',
+            ];
+            header('Location: ../views/Usuario/login.php');
+            exit;
+        }
+
+        $db          = (new Database())->conectar();
+        $usuarioModel = new Usuario($db);
+        $usuario      = $usuarioModel->obtenerPorCorreo($email);
+
+        // Verificación: usuario existe
+        if (!$usuario) {
+            $_SESSION['alert'] = [
+                'icon'  => 'error',
+                'title' => 'Usuario no encontrado',
+                'text'  => 'El correo no está registrado o la cuenta está inactiva.',
+            ];
+            header('Location: ../views/Usuario/login.php');
+            exit;
+        }
+
+        // Verificación: contraseña correcta
+        if (!password_verify($contrasena, $usuario['contrasena'])) {
+            $_SESSION['alert'] = [
+                'icon'  => 'error',
+                'title' => 'Contraseña incorrecta',
+                'text'  => 'Verifique sus credenciales e intente nuevamente.',
+            ];
+            header('Location: ../views/Usuario/login.php');
+            exit;
+        }
+
+        // Prevención de Session Fixation: regenerar ID antes de escribir datos
+        session_regenerate_id(true);
+
+        $_SESSION['logged_in'] = true;
+        $_SESSION['usuario']   = [
+            'id_usuario' => $usuario['id_usuario'],
+            'nombre'     => $usuario['nombre'],
+            'email'      => $usuario['email'],
+            'rol'        => strtolower($usuario['nombre_rol']),
+        ];
+
+        $usuarioModel->actualizarUltimoAcceso($usuario['id_usuario']);
+
+        // Redirección basada en rol (RBAC)
+        switch (strtolower($usuario['nombre_rol'])) {
+            case 'administrador':
+                header('Location: ../views/Dashboard/Admin.php');
+                exit;
+
+            case 'empleado':
+                header('Location: ../views/Dashboard/Empleado.php');
+                exit;
+
+            default:
+                // Rol desconocido: denegar acceso
+                session_unset();
+                session_destroy();
+                $_SESSION['alert'] = [
+                    'icon'  => 'error',
+                    'title' => 'Rol no válido',
+                    'text'  => 'No se pudo determinar el nivel de acceso del usuario.',
+                ];
+                header('Location: ../views/Usuario/login.php');
+                exit;
+        }
     }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        redirigirConError('../views/usuarios/login.php', 'El correo no es válido.');
-    }
-    /* Verificar credenciales */
-    $user = $usuario->verificarCredenciales($email, $contrasena);
-    if (!$user) {
-        redirigirConError('../views/usuarios/login.php', 'Correo o contraseña incorrectos.');
-    }
 
-    /* Creación de variables de sesión */
-    $_SESSION['id_usuario'] = $user['id_usuario'];
-    $_SESSION['nombre'] = $user['nombre'];
-    $_SESSION['email'] = $user['email'];
-    $_SESSION['rol'] = $user['nombre_rol'];
-    $_SESSION['logged_in'] = true;
-    /* Actualización último acceso */
-    $usuario->actualizarUltimoAcceso($user['id_usuario']);
-
-    /* Redirección al dashboard */
-    header('Location: ../views/dashboard.php');
-    exit;
-}
-
-/* ======================================================
-FUNCIÓN REGISTRO DE USUARIO
-   ====================================================== */
-function registro($usuario)
-{
-    /* Captura de datos */
-    $nombre = trim($_POST['nombre'] ?? '');
-    $numeroIdentificacion = trim($_POST['numeroIdentificacion'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $contrasena = trim($_POST['contrasena'] ?? '');
-    $confirmar = trim($_POST['confirmar'] ?? '');
-    $terminos = isset($_POST['terminos']) ? true : false;
-
-    /* Validaciones del formulario */
-    if (
-        empty($nombre) ||
-        empty($numeroIdentificacion) ||
-        empty($email) ||
-        empty($contrasena) ||
-        empty($confirmar)
-    ) {
-        redirigirConError('../views/usuarios/registro.php', 'Completa todos los campos.');
-    }
-
-    if (!$terminos) {
-        redirigirConError('../views/usuarios/registro.php', 'Debes aceptar los términos y condiciones.');
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        redirigirConError('../views/usuarios/registro.php', 'El correo no es válido.');
-    }
-
-    if ($contrasena !== $confirmar) {
-        redirigirConError('../views/usuarios/registro.php', 'Las contraseñas no coinciden.');
-    }
-
-    if (strlen($contrasena) < 8) {
-        redirigirConError('../views/usuarios/registro.php', 'La contraseña debe tener al menos 8 caracteres.');
-    }
-
-    /* Validación de correo existente */
-    if ($usuario->existeCorreo($email)) {
-        redirigirConError('../views/usuarios/registro.php', 'Ya existe una cuenta con ese correo.');
-    }
-
-    /* Validación de identificación existente */
-    if ($usuario->existeIdentificacion($numeroIdentificacion)) {
-        redirigirConError('../views/usuarios/registro.php', 'Ya existe una cuenta con ese número de identificación.');
-    }
-
-    /* Preparación de datos */
-    $datos = [
-        'id_rol' => 2,  // 2 = Vendedor/Empleado (por defecto)
-        'nombre' => $nombre,
-        'numeroIdentificacion' => $numeroIdentificacion,
-        'email' => $email,
-        'contrasena' => $contrasena
-    ];
-
-    /* Registro en base de datos */
-    $resultado = $usuario->registrar($datos);
-
-    /* Resultado del registro */
-    if ($resultado === true) {
-        $_SESSION['exito'] = '¡Cuenta creada exitosamente! Ya puedes iniciar sesión.';
-        header('Location: ../views/usuarios/login.php');
+    /**
+     * Cierra la sesión de forma segura y redirige al login.
+     */
+    public function logout(): void
+    {
+        session_unset();
+        session_destroy();
+        header('Location: ../views/Usuario/login.php');
         exit;
     }
-    redirigirConError('../views/usuarios/registro.php', 'Error al guardar: Intente nuevamente.');
 }
 
-/* ======================================================
-FUNCIÓN CIERRE DE SESIÓN
-   ====================================================== */
-function logout()
-{
-    session_unset();
-    session_destroy();
-    header('Location: ../views/usuarios/login.php');
-    exit;
-}
+// =============================================================================
+// ENRUTADOR
+// =============================================================================
 
-/* ======================================================
-FUNCIÓN DE REDIRECCIÓN CON MENSAJE DE ERROR
-   ====================================================== */
-function redirigirConError($url, $mensaje)
-{
-    $_SESSION['error'] = $mensaje;
-    header('Location: ' . $url);
-    exit;
-}
+$controller = new AuthController();
+$accion     = $_GET['accion'] ?? 'login';
 
-?>
+if ($accion === 'logout') {
+    $controller->logout();
+} else {
+    $controller->login();
+}

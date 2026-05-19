@@ -1,0 +1,13 @@
+# Registrar Proveedor
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Adminproveedores.php.
+
+Para realizar esta acción, el usuario interactúa con el botón "Nuevo Proveedor" que abre un modal con el formulario. El javascript de la página se encarga de mostrar el modal con los campos necesarios: nombre del proveedor que es obligatorio, teléfono opcional para contacto, email opcional para comunicaciones, empresa opcional que representa la razón social o nombre comercial de la compañía proveedora.
+
+Al momento de enviar los datos, el formulario en su atributo action está conectado directamente con el archivo ProveedorController.php con el parámetro accion=crear. Dentro de este controlador, el sistema pasa por la acción o función llamada crear en función principal.
+
+Cabe recordar que este controlador incluye todos los archivos de configuración como database.php para tener permisos en la base de datos, y se apoya en el modelo Proveedor.php necesario para interactuar con la tabla proveedores. Una vez que el controlador valida los datos recibidos del formulario, verifica que el nombre no esté vacío ya que es el único campo obligatorio. Los campos de teléfono, email y empresa son opcionales y pueden quedar como NULL en la base de datos. Si se proporciona un email, el controlador puede validar que tenga un formato válido usando filter_var con FILTER_VALIDATE_EMAIL. Después de todas estas validaciones, el controlador llama al método crear del modelo pasándole todos los datos saneados con trim para eliminar espacios en blanco al inicio y final.
+
+El modelo Proveedor.php recibe los datos y prepara una consulta SQL de tipo INSERT con los campos nombre, telefono, email, empresa y activo usando consultas preparadas con PDO para prevenir inyección SQL. La consulta inserta el nuevo proveedor en la tabla proveedores estableciendo el campo activo en 1 por defecto, lo que significa que el proveedor estará disponible inmediatamente para ser asignado a productos. También se registra automáticamente la fecha_registro con el timestamp actual del servidor. El modelo maneja cualquier error de base de datos capturando excepciones PDO y retornando mensajes de error apropiados.
+
+Al finalizar el proceso con éxito o si ocurre algún error, el mismo controlador se encarga de hacer el redireccionamiento para devolver al usuario a la vista auth/Adminproveedores.php, mostrando un mensaje flotante con SweetAlert2 indicando si el proveedor fue registrado correctamente o si hubo algún error en el proceso. Una vez creado, el proveedor aparece inmediatamente en los selects de formularios de productos y en la tabla de gestión de proveedores.

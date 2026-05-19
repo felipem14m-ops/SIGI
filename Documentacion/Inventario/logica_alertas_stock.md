@@ -1,0 +1,19 @@
+# Alertas de Stock Bajo
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Adminalertas.php o puede estar integrada en el dashboard principal.
+
+Para realizar esta acción, el usuario simplemente accede al módulo de alertas desde el menú lateral del sistema o ve un widget de alertas en el dashboard principal. La vista se encarga automáticamente de cargar y mostrar todos los productos que tienen stock crítico. Al momento de cargar la página, la vista ejecuta consultas al modelo Producto.php llamando al método obtenerBajoStock que trae solo los productos cuyo stock actual es menor o igual a su stock mínimo.
+
+El modelo Producto.php ejecuta una consulta SQL de tipo SELECT con LEFT JOIN para traer los productos en situación crítica junto con el nombre de su categoría. La consulta incluye una condición WHERE que filtra stock_actual menor o igual a stock_minimo, y también excluye los productos con estado inactivo ya que no tiene sentido alertar sobre productos que ya no se venden. La consulta trae los campos ID del producto, código único, nombre, stock actual, stock mínimo y nombre de la categoría. Los resultados se ordenan por stock_actual en orden ascendente para mostrar primero los productos con menos stock, es decir los más críticos.
+
+Una vez que los datos llegan a la vista, se renderizan en una tabla HTML con diseño llamativo que resalta la urgencia de la situación. La tabla muestra columnas para código del producto, nombre en negrita, categoría, stock actual en rojo grande y parpadeante, stock mínimo, y un indicador visual de qué tan crítica es la situación. Si el stock actual es cero, se marca como AGOTADO en rojo intenso. Si el stock actual es mayor a cero pero menor o igual al mínimo, se marca como CRÍTICO en naranja. Cada fila puede tener un fondo de color de alerta para llamar la atención.
+
+La tabla puede incluir botones de acción rápida para cada producto: un botón para registrar entrada de mercancía que abre directamente el modal de movimiento de inventario con ese producto preseleccionado y el tipo de movimiento en entrada, un botón para ver el kardex completo del producto para entender por qué llegó a ese nivel de stock, y un botón para editar el producto por si se necesita ajustar el stock mínimo.
+
+Adicionalmente, la vista puede mostrar estadísticas en la parte superior: total de productos con stock bajo, total de productos agotados, y un gráfico o lista de las categorías más afectadas. Esto ayuda al administrador a identificar patrones, por ejemplo si una categoría completa tiene problemas de stock puede indicar un problema con el proveedor de esa categoría.
+
+El sistema puede enviar notificaciones automáticas cuando un producto alcanza su stock mínimo. Estas notificaciones pueden ser por email al administrador o pueden aparecer como badges de alerta en el menú lateral mostrando el número de productos con stock crítico. Algunos sistemas también implementan notificaciones push o mensajes de WhatsApp para alertas muy urgentes.
+
+Es importante que el stock mínimo de cada producto esté bien configurado según la rotación y el tiempo de reabastecimiento. Un producto de alta rotación necesita un stock mínimo más alto para evitar quedarse sin inventario. Un producto de baja rotación puede tener un stock mínimo más bajo. El administrador debe revisar periódicamente estos valores y ajustarlos según la experiencia y las estadísticas de ventas.
+
+La funcionalidad de alertas es proactiva, no reactiva. El objetivo es que el administrador vea la alerta y haga el pedido al proveedor antes de que el producto se agote completamente. Si se espera hasta que el stock sea cero, puede haber pérdida de ventas porque los clientes no pueden comprar ese producto. Por eso es crítico revisar las alertas diariamente y tomar acción inmediata.

@@ -1,0 +1,246 @@
+/* ================================================================
+   ARCHIVO: sidebar.css
+   ORIGEN:  views/layouts/sidebar.php
+   SISTEMA: SIGI - Sistema de Gestión de Inventario
+   DESCRIPCIÓN: Estilos de la barra lateral de navegación y topbar
+                del panel de administración. Contiene menú lateral,
+                logo, enlaces, insignias, avatar y cabecera superior.
+   ================================================================ */
+
+:root {
+    --sidebar-bg: #0f172a;
+    --sidebar-hover: #1e293b;
+    --sidebar-active: #2563eb;
+    --sidebar-text: #94a3b8;
+    --sidebar-text-light: #f8fafc;
+    --sidebar-border: #1e293b;
+}
+
+/* ===== BARRA LATERAL ===== */
+.barra-lateral {
+    width: 280px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif;
+}
+
+.cabecera-barra {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--sidebar-border);
+    background-color: #0b1120;
+}
+
+.logo-icon-container {
+    width: 40px;
+    height: 40px;
+    background: var(--sidebar-active);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.logo-text-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.logo-subtitle {
+    color: var(--sidebar-text);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* ===== MENÚ DE NAVEGACIÓN ===== */
+.menu-navegacion {
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.menu-navegacion::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu-navegacion::-webkit-scrollbar-thumb {
+    background: var(--sidebar-hover);
+    border-radius: 10px;
+}
+
+.seccion-menu {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+}
+
+.seccion-menu:first-child {
+    margin-top: 0;
+}
+
+.titulo-seccion {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #64748b;
+}
+
+.enlace-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+.enlace-menu:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-text-light);
+}
+
+.enlace-menu i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    transition: color 0.2s;
+}
+
+
+
+.enlace-menu.activo {
+    background-color: #3b82f6;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.enlace-menu.activo i {
+    color: white;
+}
+
+.insignia-menu {
+    margin-left: auto;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 50px;
+}
+
+.enlace-logout {
+    margin-top: 1rem;
+    color: #f87171 !important;
+}
+
+
+
+/* ===== SIDEBAR FOOTER ===== */
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--sidebar-border);
+    background-color: #0b1120;
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--sidebar-text);
+}
+
+/* ===== ÁREA DE CONTENIDO PRINCIPAL ===== */
+.contenido-principal {
+    margin-left: 280px;
+    min-height: 100vh;
+}
+
+/* ===== CABECERA DEL PANEL (topbar) ===== */
+.cabecera-panel {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.titulo-pagina {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.notificaciones-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+}
+
+
+
+.separador-vertical {
+    width: 1px;
+    height: 30px;
+    background-color: #e2e8f0;
+}
+
+.nombre-usuario-header {
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.rol-usuario-header {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+
+.avatar-usuario {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid white;
+    cursor: pointer;
+}

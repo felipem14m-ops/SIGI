@@ -1,0 +1,13 @@
+# Registrar Producto
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Adminproductos.php.
+
+Para realizar esta acción, el usuario interactúa con el botón "Nuevo Producto" que abre un modal con el formulario. El javascript de la página se encarga de mostrar el modal con los campos necesarios: código único, nombre, descripción, categoría, proveedor, precios de costo y venta, stock mínimo, stock inicial, fecha de vencimiento opcional y la opción de subir una imagen del producto.
+
+Al momento de enviar los datos, el formulario en su atributo action está conectado directamente con el archivo ProductoController.php con el parámetro accion=crear. Dentro de este controlador, el sistema pasa por la acción o función llamada crear en función principal.
+
+Cabe recordar que este controlador incluye todos los archivos de configuración como database.php para tener permisos en la base de datos, y se apoya en el modelo Producto.php necesario para interactuar con la tabla productos. Una vez que el controlador valida los datos recibidos del formulario, verifica que el código único no esté vacío, que el nombre no esté vacío, que se haya seleccionado una categoría y que los precios sean mayores a cero. Si el usuario subió una imagen, el controlador valida que sea un formato permitido JPG PNG o WEBP, que no supere los 2MB de tamaño, genera un nombre único para evitar colisiones y la mueve a la carpeta IMG/productos. Después de todas estas validaciones, el controlador llama al método crear del modelo pasándole todos los datos saneados.
+
+El modelo Producto.php recibe los datos y antes de insertar verifica en la base de datos si el código único ya existe. Si el código ya está registrado, retorna un mensaje de error indicando que el código está duplicado. Si el código es válido, el modelo prepara una consulta SQL de tipo INSERT con todos los campos usando consultas preparadas con PDO para prevenir inyección SQL. La consulta inserta el nuevo producto en la tabla productos con todos sus datos: código único, nombre, descripción, categoría, proveedor opcional, precios, stocks, fecha de vencimiento opcional, estado que se establece como activo por defecto, y el nombre de la imagen si se subió. El campo fechaCreacion se llena automáticamente con la fecha y hora actual del servidor.
+
+Al finalizar el proceso con éxito o si ocurre algún error, el mismo controlador se encarga de hacer el redireccionamiento para devolver al usuario a la vista auth/Adminproductos.php, mostrando un mensaje flotante con SweetAlert2 indicando si el producto fue registrado correctamente o si hubo algún error en el proceso.

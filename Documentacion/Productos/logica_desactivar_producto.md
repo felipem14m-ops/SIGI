@@ -1,0 +1,15 @@
+# Desactivar Producto
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Adminproductos.php.
+
+Para realizar esta acción, el usuario interactúa con el botón de desactivar que se encuentra en cada fila de la tabla de productos, específicamente en los productos que tienen estado activo. El javascript de la página se encarga de mostrar un diálogo de confirmación con SweetAlert2 preguntando al usuario si está seguro de desactivar el producto, mostrando el nombre del producto y explicando que será ocultado del catálogo pero que puede reactivarse cuando sea necesario.
+
+Al momento de confirmar la acción, el sistema redirige directamente al archivo ProductoController.php con los parámetros accion=desactivar e id con el número del producto. Dentro de este controlador, el sistema pasa por la acción o función llamada desactivar en función principal.
+
+Cabe recordar que este controlador incluye todos los archivos de configuración como database.php para tener permisos en la base de datos, y se apoya en el modelo Producto.php necesario para interactuar con la tabla productos. Una vez que el controlador recibe la petición, valida que el ID del producto sea un número entero válido mayor a cero. Si el ID no es válido, muestra un mensaje de error y redirige. Si el ID es válido, el controlador llama al método cambiarEstado del modelo pasándole el ID del producto y el nuevo estado que será inactivo.
+
+El modelo Producto.php recibe el ID y el estado, primero valida que el estado sea uno de los valores permitidos: activo, inactivo o agotado. Si el estado es válido, el modelo prepara una consulta SQL de tipo UPDATE muy simple que solo modifica el campo estado del producto usando consultas preparadas con PDO. La consulta ejecuta UPDATE productos SET estado igual a inactivo WHERE id_producto igual al ID recibido. Esta operación es muy rápida y segura porque no elimina ningún dato, solo cambia el estado.
+
+Es importante entender por qué se desactiva en lugar de eliminar. Si se eliminara el producto con DELETE, se romperían todas las relaciones con la tabla detalleventa que contiene el historial de ventas, y con la tabla movimiento_inventario que contiene el kardex completo. Al desactivar, se mantiene la integridad referencial, se conserva todo el historial, los reportes siguen siendo precisos y el producto puede reactivarse fácilmente en cualquier momento. Los productos inactivos no aparecen en el sistema POS ni están disponibles para ventas, pero sí aparecen en la tabla de administración con un badge gris para que el administrador pueda gestionarlos.
+
+Al finalizar el proceso con éxito o si ocurre algún error, el mismo controlador se encarga de hacer el redireccionamiento para devolver al usuario a la vista auth/Adminproductos.php, mostrando un mensaje flotante con SweetAlert2 indicando si el producto fue desactivado correctamente o si hubo algún error en el proceso. Si el usuario desea reactivar el producto, el proceso es exactamente el mismo pero cambiando el estado de inactivo a activo.

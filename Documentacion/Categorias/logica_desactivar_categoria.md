@@ -1,0 +1,15 @@
+# Desactivar Categoría
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Admincategorias.php.
+
+Para realizar esta acción, el usuario interactúa con el botón de desactivar que se encuentra en cada fila de la tabla de categorías, específicamente en las categorías que tienen estado activo. El javascript de la página se encarga de mostrar un diálogo de confirmación con SweetAlert2 preguntando al usuario si está seguro de desactivar la categoría, mostrando el nombre de la categoría y explicando que será ocultada del sistema pero que puede reactivarse cuando sea necesario.
+
+Al momento de confirmar la acción, el sistema redirige directamente al archivo CategoriaController.php con los parámetros accion=desactivar e id con el número de la categoría. Dentro de este controlador, el sistema pasa por la acción o función llamada desactivar en función principal.
+
+Cabe recordar que este controlador incluye todos los archivos de configuración como database.php para tener permisos en la base de datos, y se apoya en el modelo Categoria.php necesario para interactuar con la tabla categorias. Una vez que el controlador recibe la petición, valida que el ID de la categoría sea un número entero válido mayor a cero. Antes de proceder con la desactivación, el controlador llama al método tieneProductos del modelo para verificar si la categoría tiene productos activos asignados. Si la categoría tiene productos activos, el sistema muestra un mensaje de error indicando que no se puede desactivar una categoría que tiene productos activos asociados, ya que esto dejaría a esos productos sin categoría válida. Si la categoría no tiene productos activos o solo tiene productos inactivos, el controlador procede a llamar al método cambiarEstado del modelo pasándole el ID de la categoría y el nuevo estado que será 0 para inactivo.
+
+El modelo Categoria.php recibe el ID y el estado, y prepara una consulta SQL de tipo UPDATE muy simple que solo modifica el campo activa de la categoría usando consultas preparadas con PDO. La consulta ejecuta UPDATE categorias SET activa igual a 0 WHERE id_categoria igual al ID recibido. Esta operación es muy rápida y segura porque no elimina ningún dato, solo cambia el estado.
+
+Las categorías inactivas no aparecen en los selects de formularios cuando se crea o edita un producto, pero sí aparecen en la tabla de administración de categorías con un badge gris para que el administrador pueda gestionarlas. Los productos que ya tenían asignada esa categoría mantienen la relación, pero no se pueden asignar nuevos productos a una categoría inactiva.
+
+Al finalizar el proceso con éxito o si ocurre algún error, el mismo controlador se encarga de hacer el redireccionamiento para devolver al usuario a la vista auth/Admincategorias.php, mostrando un mensaje flotante con SweetAlert2 indicando si la categoría fue desactivada correctamente o si hubo algún error en el proceso. Si el usuario desea reactivar la categoría, el proceso es exactamente el mismo pero cambiando el estado de 0 a 1.

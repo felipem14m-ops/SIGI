@@ -1,0 +1,171 @@
+/* ================================================================
+   ARCHIVO: admin.css
+   ORIGEN:  views/Dashboard/Admin.php
+   SISTEMA: SIGI - Sistema de Gestión de Inventario
+   DESCRIPCIÓN: Estilos del panel principal de administración.
+                Contiene metric cards, dashboard panels, botones de
+                acción rápida, listas y badges del dashboard Admin.
+   ================================================================ */
+
+/* ===== VARIABLES DEL DASHBOARD ===== */
+:root {
+    --dash-primary: #0f172a;
+    --dash-accent: #2563eb;
+    --dash-success: #10b981;
+    --dash-warning: #f59e0b;
+    --dash-danger: #ef4444;
+    --dash-bg: #f8fafc;
+    --dash-card: #ffffff;
+    --dash-text: #334155;
+    --dash-text-muted: #64748b;
+    --dash-border: #e2e8f0;
+}
+
+body {
+    background-color: var(--dash-bg) !important;
+    color: var(--dash-text);
+    font-family: 'Inter', sans-serif;
+}
+
+/* ===== METRIC CARDS ===== */
+.metric-card {
+    background: var(--dash-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--dash-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.metric-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--dash-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* Colores de íconos del dashboard */
+.icon-blue   { background: #eff6ff; color: var(--dash-accent); }
+.icon-green  { background: #ecfdf5; color: var(--dash-success); }
+.icon-orange { background: #fffbeb; color: var(--dash-warning); }
+.icon-red    { background: #fef2f2; color: var(--dash-danger); }
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dash-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.metric-footer {
+    margin-top: auto;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Indicadores de tendencia */
+.trend-up      { color: var(--dash-success); font-weight: 500; }
+.trend-down    { color: var(--dash-danger);  font-weight: 500; }
+.trend-neutral { color: var(--dash-text-muted); font-weight: 500; }
+
+/* ===== DASHBOARD PANELS ===== */
+.dashboard-panel {
+    background: var(--dash-card);
+    border-radius: 12px;
+    border: 1px solid var(--dash-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.panel-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dash-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ===== BOTONES DE ACCIÓN RÁPIDA ===== */
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: var(--dash-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 8px;
+    color: var(--dash-text);
+    font-weight: 500;
+    transition: all 0.2s;
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+}
+
+
+
+.quick-action-btn i {
+    color: var(--dash-accent);
+    font-size: 1.1rem;
+}
+
+/* ===== LISTAS DE ITEMS ===== */
+.list-group-item-custom {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--dash-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-group-item-custom:last-child {
+    border-bottom: none;
+}
+
+/* ===== BADGES SUAVES ===== */
+.badge-soft-danger {
+    background: #fef2f2;
+    color: var(--dash-danger);
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.badge-soft-warning {
+    background: #fffbeb;
+    color: var(--dash-warning);
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}

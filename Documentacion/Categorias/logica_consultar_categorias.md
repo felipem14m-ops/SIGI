@@ -1,0 +1,15 @@
+# Consultar Categorías
+
+La lógica de esta funcionalidad se maneja principalmente desde la vista auth/Admincategorias.php.
+
+Para realizar esta acción, el usuario simplemente accede al módulo de categorías desde el menú lateral del sistema. La vista se encarga automáticamente de cargar y mostrar todas las categorías registradas en el sistema. Al momento de cargar la página, la vista ejecuta consultas al modelo Categoria.php llamando al método listarTodas que trae todas las categorías con información adicional calculada.
+
+El modelo Categoria.php ejecuta una consulta SQL de tipo SELECT con LEFT JOIN y GROUP BY para traer las categorías junto con un conteo de cuántos productos tiene asignados cada una. La consulta cuenta solo los productos que no están en estado inactivo para dar una cifra más precisa de productos realmente disponibles. Se usa LEFT JOIN para que las categorías sin productos también aparezcan en el listado con un conteo de cero. La consulta trae todos los campos de la categoría: ID, nombre, descripción, imagen y estado activa. Los resultados se ordenan alfabéticamente por nombre de categoría para facilitar la búsqueda visual.
+
+Una vez que los datos llegan a la vista, se renderizan en una tabla HTML que muestra columnas para imagen de la categoría en miniatura, nombre en negrita, descripción truncada si es muy larga, cantidad de productos asignados con un badge que muestra el número, estado con badge de color verde si está activa o gris si está inactiva, y botones de acciones para editar y desactivar o activar. Si la categoría tiene una imagen, se muestra la miniatura, si no tiene imagen se muestra un placeholder con un ícono de carpeta.
+
+La tabla utiliza la librería DataTables de JavaScript que se inicializa automáticamente al cargar la página y proporciona funcionalidades avanzadas. DataTables agrega un campo de búsqueda global que permite buscar en tiempo real por nombre o descripción de la categoría. También permite ordenar los datos haciendo clic en los encabezados de las columnas. La paginación se maneja automáticamente mostrando un número configurable de registros por página. En dispositivos móviles, DataTables adapta la tabla para que sea responsive.
+
+Desde esta tabla el usuario puede realizar varias acciones. Al hacer clic en el botón de editar, se ejecuta una función JavaScript que busca los datos de la categoría en el array JSON cargado en la página, prellena el modal de edición y lo muestra. Al hacer clic en desactivar, el sistema primero verifica si la categoría tiene productos activos asignados. Si tiene productos activos, muestra un mensaje de error explicando que no se puede desactivar. Si no tiene productos activos o solo tiene productos inactivos, muestra un diálogo de confirmación y luego redirige al controlador con la acción de desactivar.
+
+Es importante mencionar que el conteo de productos se calcula en tiempo real cada vez que se carga la página, por lo que siempre muestra información actualizada. Las categorías son fundamentales para la organización del inventario y facilitan la búsqueda y filtrado de productos tanto en el módulo de administración como en el sistema POS.
