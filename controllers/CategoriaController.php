@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ============================================================================
  * CONTROLADOR: CategoriaController
@@ -166,7 +167,7 @@ switch ($accion) {
     case 'desactivar':
         $id = (int) ($_GET['id'] ?? 0);
         if ($id <= 0) {
-            $setAlert('error', 'Error', 'ID de categoría no válido.');
+            $setAlert('error', 'Error', 'ID no válido.');
             $redirigir('../views/Dashboard/Admincategorias.php');
         }
 
@@ -187,7 +188,7 @@ switch ($accion) {
     case 'activar':
         $id = (int) ($_GET['id'] ?? 0);
         if ($id <= 0) {
-            $setAlert('error', 'Error', 'ID de categoría no válido.');
+            $setAlert('error', 'Error', 'ID no válido.');
             $redirigir('../views/Dashboard/Admincategorias.php');
         }
 

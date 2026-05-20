@@ -439,12 +439,12 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 
                                         <?php if ($prov['activo']): ?>
                                             <button class="btn-accion btn-accion-desactivar" title="Desactivar"
-                                                onclick="confirmarEstado('<?= $base_url ?>controllers/ProveedorController.php?accion=toggleEstado&id=<?= $prov['id_proveedor'] ?>&estado=1', '<?= htmlspecialchars($prov['nombre'], ENT_QUOTES) ?>', 'desactivar')">
+                                                onclick="confirmarEstado('<?= $base_url ?>controllers/ProveedorController.php?accion=desactivar&id=<?= $prov['id_proveedor'] ?>', '<?= htmlspecialchars($prov['nombre'], ENT_QUOTES) ?>', 'desactivar')">
                                                 <i class="fas fa-ban"></i>
                                             </button>
                                         <?php else: ?>
                                             <button class="btn-accion btn-accion-activar" title="Activar"
-                                                onclick="confirmarEstado('<?= $base_url ?>controllers/ProveedorController.php?accion=toggleEstado&id=<?= $prov['id_proveedor'] ?>&estado=0', '<?= htmlspecialchars($prov['nombre'], ENT_QUOTES) ?>', 'activar')">
+                                                onclick="confirmarEstado('<?= $base_url ?>controllers/ProveedorController.php?accion=activar&id=<?= $prov['id_proveedor'] ?>', '<?= htmlspecialchars($prov['nombre'], ENT_QUOTES) ?>', 'activar')">
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         <?php endif; ?>

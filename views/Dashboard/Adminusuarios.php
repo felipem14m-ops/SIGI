@@ -489,14 +489,14 @@ require_once __DIR__ . '/../layouts/sidebar.php';
 
                                         <?php if ($usr['activo']): ?>
                                             <button class="btn-accion btn-accion-desactivar btn-toggle-estado" title="Desactivar Cuenta"
-                                                data-url="<?= $base_url ?>controllers/AdmiUsuarioController.php?accion=toggleEstado&id=<?= $usr['id_usuario'] ?>&estado=<?= $usr['activo'] ?>"
+                                                data-url="<?= $base_url ?>controllers/AdmiUsuarioController.php?accion=desactivar&id=<?= $usr['id_usuario'] ?>"
                                                 data-nombre="<?= htmlspecialchars($usr['nombre'], ENT_QUOTES) ?>"
                                                 data-accion="desactivar">
                                                 <i class="fas fa-user-slash"></i>
                                             </button>
                                         <?php else: ?>
                                             <button class="btn-accion btn-accion-activar btn-toggle-estado" title="Activar Cuenta"
-                                                data-url="<?= $base_url ?>controllers/AdmiUsuarioController.php?accion=toggleEstado&id=<?= $usr['id_usuario'] ?>&estado=<?= $usr['activo'] ?>"
+                                                data-url="<?= $base_url ?>controllers/AdmiUsuarioController.php?accion=activar&id=<?= $usr['id_usuario'] ?>"
                                                 data-nombre="<?= htmlspecialchars($usr['nombre'], ENT_QUOTES) ?>"
                                                 data-accion="activar">
                                                 <i class="fas fa-user-check"></i>

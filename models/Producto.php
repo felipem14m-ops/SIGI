@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ============================================================================
  * MODELO: Producto
@@ -63,7 +64,6 @@ class Producto
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] listarTodos: " . $e->getMessage());
             return [];
@@ -100,7 +100,6 @@ class Producto
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] listarActivos: " . $e->getMessage());
             return [];
@@ -129,7 +128,6 @@ class Producto
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] obtenerPorId: " . $e->getMessage());
             return false;
@@ -156,7 +154,6 @@ class Producto
             $stmt = $this->conn->prepare($sql);
             $stmt->execute($params);
             return (int) $stmt->fetchColumn() > 0;
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] existeCodigo: " . $e->getMessage());
             return false;
@@ -185,7 +182,6 @@ class Producto
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] obtenerBajoStock: " . $e->getMessage());
             return [];
@@ -209,10 +205,12 @@ class Producto
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC) ?: [
-                'total' => 0, 'activos' => 0, 'inactivos' => 0,
-                'agotados' => 0, 'bajo_stock' => 0
+                'total' => 0,
+                'activos' => 0,
+                'inactivos' => 0,
+                'agotados' => 0,
+                'bajo_stock' => 0
             ];
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] obtenerEstadisticas: " . $e->getMessage());
             return ['total' => 0, 'activos' => 0, 'inactivos' => 0, 'agotados' => 0, 'bajo_stock' => 0];
@@ -255,13 +253,12 @@ class Producto
             $stmt->bindValue(':precio_costo',    (float) $datos['precio_costo'],             PDO::PARAM_STR);
             $stmt->bindValue(':stock_minimo',    (int) ($datos['stock_minimo'] ?? 0),        PDO::PARAM_INT);
             $stmt->bindValue(':stock_actual',    (int) ($datos['stock_actual'] ?? 0),        PDO::PARAM_INT);
-            $stmt->bindValue(':fechaVencimiento',$datos['fechaVencimiento'] ?: null,         PDO::PARAM_STR);
+            $stmt->bindValue(':fechaVencimiento', $datos['fechaVencimiento'] ?: null,         PDO::PARAM_STR);
             $stmt->bindValue(':estado',          $datos['estado'] ?? 'activo',               PDO::PARAM_STR);
             $stmt->bindValue(':imagen',          $datos['imagen'] ?? null,                   PDO::PARAM_STR);
 
             $stmt->execute();
             return true;
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] crear: " . $e->getMessage());
             return 'Error al guardar el producto. Intente nuevamente.';
@@ -304,14 +301,13 @@ class Producto
             $stmt->bindValue(':precio_venta',    (float) $datos['precio_venta'],             PDO::PARAM_STR);
             $stmt->bindValue(':precio_costo',    (float) $datos['precio_costo'],             PDO::PARAM_STR);
             $stmt->bindValue(':stock_minimo',    (int) ($datos['stock_minimo'] ?? 0),        PDO::PARAM_INT);
-            $stmt->bindValue(':fechaVencimiento',$datos['fechaVencimiento'] ?: null,         PDO::PARAM_STR);
+            $stmt->bindValue(':fechaVencimiento', $datos['fechaVencimiento'] ?: null,         PDO::PARAM_STR);
             $stmt->bindValue(':estado',          $datos['estado'] ?? 'activo',               PDO::PARAM_STR);
             $stmt->bindValue(':imagen',          $datos['imagen'] ?? null,                   PDO::PARAM_STR);
             $stmt->bindValue(':id',              $id,                                        PDO::PARAM_INT);
 
             $stmt->execute();
             return true;
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] actualizar: " . $e->getMessage());
             return 'Error al actualizar el producto. Intente nuevamente.';
@@ -336,7 +332,6 @@ class Producto
             $stmt->bindValue(':id',     $id,     PDO::PARAM_INT);
             $stmt->execute();
             return true;
-
         } catch (PDOException $e) {
             error_log("[SIGI][Producto] cambiarEstado: " . $e->getMessage());
             return 'Error al cambiar el estado del producto.';

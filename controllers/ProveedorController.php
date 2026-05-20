@@ -138,29 +138,44 @@ class ProveedorController
     }
 
     // =========================================================================
-    // CAMBIAR ESTADO (Activar / Desactivar)
+    // DESACTIVAR PROVEEDOR
     // =========================================================================
 
-    public function toggleEstado(): void
+    public function desactivar(): void
     {
-        $id           = filter_input(INPUT_GET, 'id',     FILTER_VALIDATE_INT);
-        $estadoActual = filter_input(INPUT_GET, 'estado', FILTER_VALIDATE_INT);
-
-        if ($id === false || $id === null || $estadoActual === false || $estadoActual === null) {
-            $this->setAlert('error', 'Error', 'Parámetros inválidos.');
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            $this->setAlert('error', 'Error', 'ID no válido.');
             $this->redirigir('../views/Dashboard/Adminproveedores.php');
         }
 
-        $nuevoEstado = ($estadoActual == 1) ? 0 : 1;
-        $resultado   = $this->proveedorModel->cambiarEstado($id, $nuevoEstado);
-
+        $resultado = $this->proveedorModel->cambiarEstado($id, 0);
         if ($resultado === true) {
-            $accionMsg = ($nuevoEstado === 1) ? 'activado' : 'desactivado';
-            $this->setAlert('success', 'Estado actualizado', "El proveedor ha sido {$accionMsg}.");
+            $this->setAlert('success', 'Proveedor desactivado', 'El proveedor fue desactivado del catálogo.');
         } else {
-            $this->setAlert('error', 'Error', is_string($resultado) ? $resultado : 'No se pudo cambiar el estado.');
+            $this->setAlert('error', 'Error', $resultado);
+        }
+        $this->redirigir('../views/Dashboard/Adminproveedores.php');
+    }
+
+    // =========================================================================
+    // ACTIVAR PROVEEDOR
+    // =========================================================================
+
+    public function activar(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            $this->setAlert('error', 'Error', 'ID no válido.');
+            $this->redirigir('../views/Dashboard/Adminproveedores.php');
         }
 
+        $resultado = $this->proveedorModel->cambiarEstado($id, 1);
+        if ($resultado === true) {
+            $this->setAlert('success', 'Proveedor activado', 'El proveedor fue reactivado en el catálogo.');
+        } else {
+            $this->setAlert('error', 'Error', $resultado);
+        }
         $this->redirigir('../views/Dashboard/Adminproveedores.php');
     }
 
@@ -204,8 +219,12 @@ if ($accion !== '') {
             $controller->editar();
             break;
 
-        case 'toggleEstado':
-            $controller->toggleEstado();
+        case 'desactivar':
+            $controller->desactivar();
+            break;
+
+        case 'activar':
+            $controller->activar();
             break;
 
         case 'obtenerProductos':

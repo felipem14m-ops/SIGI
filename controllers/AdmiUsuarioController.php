@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ============================================================================
  * CONTROLADOR: AdmiUsuarioController
@@ -139,29 +140,44 @@ class AdminUsuarioController
     }
 
     // =========================================================================
-    // TOGGLE ESTADO (Soft Delete)
+    // DESACTIVAR USUARIO
     // =========================================================================
 
-    public function toggleEstado(): void
+    public function desactivar(): void
     {
-        $idUsuario = filter_input(INPUT_GET, 'id',     FILTER_VALIDATE_INT);
-        $estado    = filter_input(INPUT_GET, 'estado', FILTER_VALIDATE_INT);
-
-        if ($idUsuario === null || $idUsuario === false || $estado === null || $estado === false) {
-            $this->setAlert('error', 'Error', 'Parámetros no válidos.');
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            $this->setAlert('error', 'Error', 'ID no válido.');
             $this->redirigir('../views/Dashboard/Adminusuarios.php');
         }
 
-        $nuevoEstado = ($estado == 1) ? 0 : 1;
-        $resultado   = $this->usuarioModel->cambiarEstado($idUsuario, $nuevoEstado);
-
+        $resultado = $this->usuarioModel->cambiarEstado($id, 0);
         if ($resultado === true) {
-            $statusText = ($nuevoEstado === 1) ? 'activado' : 'desactivado';
-            $this->setAlert('success', 'Éxito', "Usuario {$statusText} correctamente.");
+            $this->setAlert('success', 'Usuario desactivado', 'El usuario fue desactivado correctamente.');
         } else {
-            $this->setAlert('error', 'Error', is_string($resultado) ? $resultado : 'No se pudo cambiar el estado.');
+            $this->setAlert('error', 'Error', $resultado);
+        }
+        $this->redirigir('../views/Dashboard/Adminusuarios.php');
+    }
+
+    // =========================================================================
+    // ACTIVAR USUARIO
+    // =========================================================================
+
+    public function activar(): void
+    {
+        $id = (int) ($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            $this->setAlert('error', 'Error', 'ID no válido.');
+            $this->redirigir('../views/Dashboard/Adminusuarios.php');
         }
 
+        $resultado = $this->usuarioModel->cambiarEstado($id, 1);
+        if ($resultado === true) {
+            $this->setAlert('success', 'Usuario activado', 'El usuario fue reactivado correctamente.');
+        } else {
+            $this->setAlert('error', 'Error', $resultado);
+        }
         $this->redirigir('../views/Dashboard/Adminusuarios.php');
     }
 }
@@ -182,8 +198,12 @@ switch ($accion) {
         $controller->editar();
         break;
 
-    case 'toggleEstado':
-        $controller->toggleEstado();
+    case 'desactivar':
+        $controller->desactivar();
+        break;
+
+    case 'activar':
+        $controller->activar();
         break;
 
     default:
